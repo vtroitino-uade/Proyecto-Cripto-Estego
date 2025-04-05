@@ -34,7 +34,7 @@ cd Proyecto-Cripto-Estego
 ```bash
   python -m venv env
 ```
-### 3. Acrivar entorno virtual
+### 3. Activar entorno virtual
 ```bash
   .\env\Scripts\activate
 ```
