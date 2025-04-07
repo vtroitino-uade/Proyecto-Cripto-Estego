@@ -5,7 +5,10 @@ Este proyecto es una herramienta educativa desarrollada en Python para experimen
 
 ## Integrates
 
-- [@vtroitino-uade](https://github.com/vtroitino-uade), Troitiño Valentin, Legajo 1205019
+- De Souza Franco
+- Hassan Ayelen
+- Squeo Paloma
+- Troitiño Valentin
 
 
 ## Características
@@ -22,6 +25,23 @@ Este proyecto es una herramienta educativa desarrollada en Python para experimen
 - Generación de claves aleatorias (basadas en imagen o independientes).
 - Ocultamiento y recuperación de mensajes en imágenes mediante esteganografía (LSB).
 - Interfaz gráfica simple e intuitiva desarrollada con Tkinter.
+
+## Fases
+
+### Fase 1 - 40%
+- Implementación inicial de cifrados básicos (César, Vigenère).
+- Implementación del cifrado de archivos.
+- Creación de una interfaz gráfica simple.
+- Soporte para ingreso y visualización de mensajes cifrados.
+### Fase 2 - 80%
+- Inclusión de cifrados más avanzados (Hill, XOR, Feistel).
+- Implementación de esteganografía en imágenes (LSB).
+- Implementación de otros métodos de esteganografía
+- Generación de claves aleatorias y basadas en imágenes.
+### Fase 3 - 100%
+- Implementación del Cifrado AES
+- Documentación completa del código y uso del programa.
+- Búsqueda de errores y optimización.
 
 ## Instalación
 
