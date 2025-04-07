@@ -7,7 +7,7 @@ Este proyecto es una herramienta educativa desarrollada en Python para experimen
 
 - De Souza Franco
 - Hassan Ayelen
-- Squeo Paloma
+- Squeo Paloma, Legajo: 1208949
 - Troitiño Valentin
 
 
