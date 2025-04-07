@@ -47,14 +47,14 @@ Este proyecto es una herramienta educativa desarrollada en Python para experimen
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/usuario/proyecto-cripto-estego.git
-cd proyecto-cripto-estego
+git clone https://github.com/vtroitino-uade/Proyecto-Cripto-Estego.git
+cd Proyecto-Cripto-Estego
 ```
 ### 2. Crear un entorno virtual
 ```bash
   python -m venv env
 ```
-### 3. Acrivar entorno virtual
+### 3. Activar entorno virtual
 ```bash
   .\env\Scripts\activate
 ```
