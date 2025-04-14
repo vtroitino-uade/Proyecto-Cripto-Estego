@@ -5,7 +5,7 @@ Este proyecto es una herramienta educativa desarrollada en Python para experimen
 
 ## Integrates
 
-- De Souza Franco
+- De Souza Franco, Legajo: 1179618
 - Hassan Ayelen
 - Squeo Paloma, Legajo: 1208949
 - Troitiño Valentin, Legajo:  1205019
