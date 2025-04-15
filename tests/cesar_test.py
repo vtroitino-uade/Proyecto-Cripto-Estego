@@ -1,44 +1,41 @@
 import unittest
 from encriptado import cesar
 
-class TestCesarAlfabetoEspanol(unittest.TestCase):
-    ESP = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
-
+class TestCesarUnicode(unittest.TestCase):
+    """
+    Pruebas para el cifrado César con el estándar Unicode.
+    """
     def test_clave_positiva(self):
-        self.assertEqual(cesar("abcñ", 3, alfabeto=self.ESP), "defq")
-        self.assertEqual(cesar("xyzñ", 2, alfabeto=self.ESP), "zabp")
-        self.assertEqual(cesar("hola", 5, alfabeto=self.ESP), "mtpf")
+        self.assertEqual(cesar("ñxyz1234", 3), "z{|}4567")
+        self.assertEqual(cesar("hola", 5), "mtpf")
 
     def test_clave_negativa(self):
-        self.assertEqual(cesar("defo", -3, alfabeto=self.ESP), "abcm")
-        self.assertEqual(cesar("zabñ", -2, alfabeto=self.ESP), "xyzm")
-        self.assertEqual(cesar("mtpf", -5, alfabeto=self.ESP), "hola")
+        self.assertEqual(cesar("abcd", -3), "^_`a")
+        self.assertEqual(cesar("mtpf", -5), "hola")
 
     def test_clave_cero(self):
-        self.assertEqual(cesar("abcñ", 0, alfabeto=self.ESP), "abcñ")
-        self.assertEqual(cesar("hola", 0, alfabeto=self.ESP), "hola")
-
-    def test_caracteres_no_alfabeticos(self):
-        self.assertEqual(cesar("abcñ123", 3, alfabeto=self.ESP), "defq123")
-        self.assertEqual(cesar("hola, mundo!", 5, alfabeto=self.ESP), "mtpf, qzrit!")
-        self.assertEqual(cesar("xyzñ!", -2, alfabeto=self.ESP), "vwxm!")
+        self.assertEqual(cesar("abcñ", 0), "abcñ")
+        self.assertEqual(cesar("hola", 0), "hola")
 
     def test_mensaje_vacio(self):
-        self.assertEqual(cesar("", 5, alfabeto=self.ESP), "")
-        self.assertEqual(cesar("", -5, alfabeto=self.ESP), "")
+        self.assertEqual(cesar("", 5), "")
+        self.assertEqual(cesar("", -5), "")
 
     def test_clave_positiva_grande(self):
-        self.assertEqual(cesar("abcñ", 30, alfabeto=self.ESP), "defq")
-        self.assertEqual(cesar("hola", 54, alfabeto=self.ESP), "hola")
+        self.assertEqual(cesar("abcñ", 3_000_000), "\U000bc721\U000bc722\U000bc723\U000bc7b1")
+        self.assertEqual(cesar("hola", 2_228_224), "hola")
 
     def test_calve_negativa_grande(self):
-        self.assertEqual(cesar("defo", -30, alfabeto=self.ESP), "abcm")
-        self.assertEqual(cesar("hola", -54, alfabeto=self.ESP), "hola")
+        self.assertEqual(cesar("\U000bc721\U000bc722\U000bc723\U000bc7b1", -3_000_000), "abcñ")
+        self.assertEqual(cesar("hola", -2_228_224), "hola")
 
     def test_descifrar(self):
-        self.assertEqual(cesar("mtpf", 5, descifrar=True, alfabeto=self.ESP), "hola")
+        self.assertEqual(cesar("Htsywfwwj{tqzhntsfwnt", 5, descifrar=True), "Contrarrevolucionario")
 
 class TestCesarAlfabetoEspanolYNumeros(unittest.TestCase):
+    """
+    Pruebas para el cifrado César con el alfabeto español y números.
+    """
     ESP_NUM = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789"
 
     def test_clave_positiva(self):
