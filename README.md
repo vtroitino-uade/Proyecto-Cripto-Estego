@@ -1,5 +1,5 @@
 
-# 🔐 Proyecto Cripto-Estego en Python
+# 🔐 Proyecto Cripto-Estego
 
 Este proyecto es una herramienta educativa desarrollada en Python para experimentar con **criptografía** y **esteganografía**, utilizando una interfaz gráfica construida con **Tkinter**. Su objetivo es demostrar el uso de algoritmos, estructuras de datos y procesamiento de imágenes sin recurrir a librerías criptográficas externas.
 
