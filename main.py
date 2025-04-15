@@ -10,4 +10,5 @@ hola_mundo = tk.Label(
 )
 hola_mundo.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-ventana.mainloop()
+if __name__ == "__main__":
+    ventana.mainloop()
