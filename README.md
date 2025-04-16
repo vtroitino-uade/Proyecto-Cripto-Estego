@@ -10,7 +10,6 @@ Este proyecto es una herramienta educativa desarrollada en Python para experimen
 - Squeo Paloma, Legajo: 1208949
 - Troitiño Valentin, Legajo:  1205019
 
-
 ## Características
 
 - Cifrado y descifrado de mensajes usando distintos algoritmos:
