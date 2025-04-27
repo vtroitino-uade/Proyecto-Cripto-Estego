@@ -5,68 +5,99 @@ CIFRADOS = ("César", "Vigenère")
 ALFABETOS = {
     "Español": "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
     "Inglés": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-    "Unicode": "",
+    "ASCII": "",
     "Personalizado": ""
 }
 
 def actualizar_alfabeto(seleccion):
     estado = "normal" if seleccion == "Personalizado" else "disabled"
-    entry_alfabeto_personalizado.configure(state=estado)
+    entrada_alfabeto_personalizado.configure(state=estado)
     print(f"Usando alfabeto: {seleccion}")
 
 def validar():
-    ALFABETOS["Personalizado"] = entry_alfabeto_personalizado.get()
-    opcion = opciones_encriptado.get()
-    alfabeto = ALFABETOS[opcion]
-    mensaje = entrada_mensaje.get()
+    ALFABETOS["Personalizado"] = entrada_alfabeto_personalizado.get().upper()
+    opcion_encriptado = opciones_encriptado.get()
+    mensaje = entrada_mensaje.get("0.0", "end-1c")
+    opcion_descifrado = opcion_accion.get()
+    opcion_alfabeto = ALFABETOS[opciones_alfabeto.get()]
 
-    if opcion == "César":
-        clave = int(entrada_clave.get())
-        resultado = cesar(mensaje, clave, False, alfabeto)
+    if opcion_encriptado == "César":
+        clave = int(entrada_clave.get()) if entrada_clave.get() != "" else 0
+        resultado = cesar(mensaje, clave, opcion_descifrado, opcion_alfabeto)
 
-    elif opcion == "Vigenère":
+    elif opcion_encriptado == "Vigenère":
         clave = entrada_clave.get()
-        resultado = vigenere(mensaje, clave, False, alfabeto)
+        resultado = vigenere(mensaje, clave, opcion_descifrado, opcion_alfabeto)
 
-    mensaje_resultado.configure(text=f"Resultado: {resultado}")
+    mensaje_resultado.delete("0.0", "end")
+    mensaje_resultado.insert("0.0", resultado)
 
 if __name__ == "__main__":
     app = ctk.CTk()
     app.title("Codificador/Decodificador")
-    app.geometry("500x500")
-    app.grid_columnconfigure(0, weight=1)
+    app.geometry("800x600")
 
-    opciones_encriptado = ctk.CTkOptionMenu(app, values=CIFRADOS)
-    opciones_encriptado.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
+    frame_principal = ctk.CTkFrame(app)
+    frame_principal.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
+    frame_principal.grid_columnconfigure(0, weight=1)
 
-    label_calve = ctk.CTkLabel(app, text="Clave", fg_color="transparent")
-    entrada_clave = ctk.CTkEntry(app, placeholder_text="Clave")
-    entrada_clave.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
+    opciones_encriptado = ctk.CTkOptionMenu(frame_principal, values=CIFRADOS)
+    opciones_encriptado.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
 
-    label_alfabeto = ctk.CTkLabel(app, text="Alfabeto", fg_color="transparent")
+    entrada_clave = ctk.CTkEntry(frame_principal, placeholder_text="Clave")
+    entrada_clave.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
+
     opciones_alfabeto = ctk.CTkOptionMenu(
-        app, 
+        frame_principal,
         values=list(ALFABETOS.keys()),
         command=actualizar_alfabeto
     )
-    label_alfabeto.grid(row=3, column=0, padx=20, sticky="w")
-    opciones_alfabeto.grid(row=4, column=0, padx=20, pady=10, sticky="ew")
+    opciones_alfabeto.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
 
-    entry_alfabeto_personalizado = ctk.CTkEntry(
-        app,
-        placeholder_text="Escribí tu alfabeto aquí",
+    entrada_alfabeto_personalizado = ctk.CTkEntry(
+        frame_principal,
+        placeholder_text="Alfabeto personalizado",
         state="disabled"
     )
-    entry_alfabeto_personalizado.grid(row=5, column=0, padx=20, pady=10, sticky="ew")
+    entrada_alfabeto_personalizado.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
 
-    label_mensaje = ctk.CTkLabel(app, text="Mensaje", fg_color="transparent")
-    entrada_mensaje = ctk.CTkEntry(app, placeholder_text="Escribe tu mensaje aquí")
-    entrada_mensaje.grid(row=6, column=0, padx=20, pady=10, sticky="ew")
+    frame_accion = ctk.CTkFrame(frame_principal)
+    frame_accion.grid(row=4, column=0, padx=20, pady=10, sticky="ew")
+    frame_accion.grid_columnconfigure(0, weight=1)
+    frame_accion.grid_columnconfigure(1, weight=1)
 
-    boton_encriptar = ctk.CTkButton(app, text="Codificar", command=validar)
-    boton_encriptar.grid(row=7, column=0, padx=20, pady=20, sticky="ew")
+    opcion_accion = ctk.StringVar(value="Cifrar")
 
-    mensaje_resultado = ctk.CTkLabel(app, text="")
-    mensaje_resultado.grid(row=8, column=0, padx=20, pady=20)
+    radio_cifrar = ctk.CTkRadioButton(
+        frame_accion,
+        text="Cifrar",
+        variable=opcion_accion,
+        value=0
+    )
+    radio_cifrar.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+    radio_descifrar = ctk.CTkRadioButton(
+        frame_accion,
+        text="Descifrar",
+        variable=opcion_accion,
+        value=1
+    )
+    radio_descifrar.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
+
+    boton_encriptar = ctk.CTkButton(frame_principal, text="Ejecutar", command=validar)
+    boton_encriptar.grid(row=5, column=0, padx=20, pady=10, sticky="ew")
+
+    entrada_mensaje = ctk.CTkTextbox(
+        app,
+        height=200,
+        fg_color="#343638",
+        border_color="#565B5E",
+        border_width=2
+    )
+    entrada_mensaje.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
+    mensaje_resultado = ctk.CTkTextbox(
+        app,
+        height=200,
+    )
+    mensaje_resultado.grid(row=0, column=2, padx=20, pady=10, sticky="ew")
 
     app.mainloop()
