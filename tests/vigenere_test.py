@@ -1,9 +1,9 @@
 import unittest
 from encriptado import vigenere
 
-class TestVigenereUnicode(unittest.TestCase):
+class TestVigenereASCII(unittest.TestCase):
     """
-    Pruebas para el cifrado Vigenère con alfabeto estándar Unicode.
+    Pruebas para el cifrado Vigenère con tabla ASCII.
     """
 
     def test_cifrar_simple(self):

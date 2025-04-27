@@ -1,17 +1,17 @@
 import unittest
 from encriptado import cesar
 
-class TestCesarUnicode(unittest.TestCase):
+class TestCesarASCII(unittest.TestCase):
     """
-    Pruebas para el cifrado César con el estándar Unicode.
+    Pruebas para el cifrado César con tabla ASCII.
     """
     def test_clave_positiva(self):
-        self.assertEqual(cesar("ñxyz1234", 3), "z{|}4567")
-        self.assertEqual(cesar("hola", 5), "mtpf")
+        self.assertEqual(cesar("ñxyz1234", 3), "ñ{|}4567")
+        self.assertEqual(cesar("hola", 5), "mtqf")
 
     def test_clave_negativa(self):
         self.assertEqual(cesar("abcd", -3), "^_`a")
-        self.assertEqual(cesar("mtpf", -5), "hola")
+        self.assertEqual(cesar("mtqf", -5), "hola")
 
     def test_clave_cero(self):
         self.assertEqual(cesar("abcñ", 0), "abcñ")
@@ -22,12 +22,12 @@ class TestCesarUnicode(unittest.TestCase):
         self.assertEqual(cesar("", -5), "")
 
     def test_clave_positiva_grande(self):
-        self.assertEqual(cesar("abcñ", 3_000_000), "\U000bc721\U000bc722\U000bc723\U000bc7b1")
-        self.assertEqual(cesar("hola", 2_228_224), "hola")
+        self.assertEqual(cesar("abcñ", 30), ' !"ñ')
+        self.assertEqual(cesar("hola", 190), "hola")
 
     def test_calve_negativa_grande(self):
-        self.assertEqual(cesar("\U000bc721\U000bc722\U000bc723\U000bc7b1", -3_000_000), "abcñ")
-        self.assertEqual(cesar("hola", -2_228_224), "hola")
+        self.assertEqual(cesar(' !"ñ', -30), "abcñ")
+        self.assertEqual(cesar("hola", -190), "hola")
 
     def test_descifrar(self):
         self.assertEqual(cesar("Htsywfwwj{tqzhntsfwnt", 5, descifrar=True), "Contrarrevolucionario")
@@ -68,4 +68,4 @@ class TestCesarAlfabetoEspanolYNumeros(unittest.TestCase):
         self.assertEqual(cesar("hola", -54, alfabeto=self.ESP_NUM), "084t")
 
     def test_descifrar(self):
-        self.assertEqual(cesar("Htrywfwwj0tpzhntrfwnt", 5, descifrar=True, alfabeto=self.ESP_NUM), "Contrarrevolucionario")
+        self.assertEqual(cesar("HTSYWFWWJ0TPZHNTSFWNT", 5, descifrar=True, alfabeto=self.ESP_NUM), "CONTRARREVOLUCIONARIO")
