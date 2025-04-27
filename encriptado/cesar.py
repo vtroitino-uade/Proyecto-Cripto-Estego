@@ -1,26 +1,28 @@
-def cesar(mensaje: str, clave: int = 6, descifrar: bool = False, alfabeto: str = "") -> str:
+def ascii_imprimibles() -> str:
     """
-    Cifrado Cesar.
+    devuelve la tabla de caracteres  ascii imprimibles  
     """
-    mensaje_en_mayusculas = mensaje.upper() #Poner todas las letas en mayusculas
+    return "".join(chr(x) for x in range(32, 127))
 
-    # Si es para descifrar, invertimos la clave
-    if descifrar: 
-        clave = -clave #Si la variables es true
+def cifrar_caracter(caracter, mayus, clave, alfabeto):
+    caracter_mayus = caracter.upper()
+    if caracter_mayus in alfabeto:
+        nueva_letra = alfabeto[(alfabeto.index(caracter_mayus) + clave) % len(alfabeto)]
+        return nueva_letra if mayus else nueva_letra.lower()
+    return caracter
 
-    resultado = ""
+def cifrar_ascii(caracter, clave):
+    alfabeto = ascii_imprimibles()
+    if caracter in alfabeto:
+        nuevo_caracter = alfabeto[(alfabeto.index(caracter) + clave) % len(alfabeto)]
+        return nuevo_caracter
+    return caracter
 
-    for indice, caracter in enumerate(mensaje_en_mayusculas):
-        if caracter in alfabeto:
-            posicion = alfabeto.index(caracter)
-            nueva_posicion = (posicion + clave) % len(alfabeto)  
-            nuevo_caracter = alfabeto[nueva_posicion]
-            if mensaje[indice].islower(): 
-                nuevo_caracter=nuevo_caracter.lower()
-            resultado += nuevo_caracter
-        else:
-            resultado += caracter  
-
-    return resultado
-
-print(cesar("Htrywfwwj0tpzhntrfwnt", 5, descifrar=True, alfabeto="ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789"))
+def cesar(mensaje: str, clave: int, descifrar: bool = False, alfabeto: str = "") -> str:
+    """
+    Cifrado Cesar
+    """
+    clave = -clave if descifrar else clave
+    if alfabeto == "":
+        return "".join(cifrar_ascii(c, clave) for c in mensaje)
+    return "".join(cifrar_caracter(c, c.isupper(), clave, alfabeto) for c in mensaje)

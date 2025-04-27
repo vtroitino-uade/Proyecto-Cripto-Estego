@@ -68,4 +68,4 @@ class TestCesarAlfabetoEspanolYNumeros(unittest.TestCase):
         self.assertEqual(cesar("hola", -54, alfabeto=self.ESP_NUM), "084t")
 
     def test_descifrar(self):
-        self.assertEqual(cesar("HTRYWFWWJ0TPZHNTRFWNT", 5, descifrar=True, alfabeto=self.ESP_NUM), "CONTRARREVOLUCIONARIO")
+        self.assertEqual(cesar("Htrywfwwj0tpzhntrfwnt", 5, descifrar=True, alfabeto=self.ESP_NUM), "Contrarrevolucionario")
