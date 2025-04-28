@@ -35,10 +35,14 @@ def validar():
 if __name__ == "__main__":
     app = ctk.CTk()
     app.title("Codificador/Decodificador")
-    app.geometry("800x600")
+    app.geometry("800x400")
+    app.grid_rowconfigure(0, weight=1)
+    app.grid_columnconfigure(0, weight=1)
+    app.grid_columnconfigure(1, weight=0)
+    app.grid_columnconfigure(2, weight=1)
 
     frame_principal = ctk.CTkFrame(app)
-    frame_principal.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
+    frame_principal.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
     frame_principal.grid_columnconfigure(0, weight=1)
 
     opciones_encriptado = ctk.CTkOptionMenu(frame_principal, values=CIFRADOS)
@@ -86,18 +90,30 @@ if __name__ == "__main__":
     boton_encriptar = ctk.CTkButton(frame_principal, text="Ejecutar", command=validar)
     boton_encriptar.grid(row=5, column=0, padx=20, pady=10, sticky="ew")
 
+    frame_mensaje = ctk.CTkFrame(app)
+    frame_mensaje.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
+
+    frame_resultado = ctk.CTkFrame(app)
+    frame_resultado.grid(row=0, column=2, padx=20, pady=10, sticky="nsew")
+
+    label_mensaje = ctk.CTkLabel(frame_mensaje, text="Mensaje Original")
+    label_mensaje.pack(pady=(10,0))
+
+    label_resultado = ctk.CTkLabel(frame_resultado, text="Resultado")
+    label_resultado.pack(pady=(10,0))
+
     entrada_mensaje = ctk.CTkTextbox(
-        app,
+        frame_mensaje,
         height=200,
         fg_color="#343638",
         border_color="#565B5E",
         border_width=2
     )
-    entrada_mensaje.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
+    entrada_mensaje.pack(expand=True, fill="both", padx=10, pady=10)
     mensaje_resultado = ctk.CTkTextbox(
-        app,
+        frame_resultado,
         height=200,
     )
-    mensaje_resultado.grid(row=0, column=2, padx=20, pady=10, sticky="ew")
+    mensaje_resultado.pack(expand=True, fill="both", padx=10, pady=10)
 
     app.mainloop()
