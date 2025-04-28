@@ -32,7 +32,7 @@ def validar():
     if clave == "":
         print("La clave no puede estar vacía.")
         return
-    
+
     if opcion_encriptado == "César":
         if not clave.isdigit() and not clave.startswith("-"):
             print("La clave debe ser un número entero.")
@@ -44,8 +44,10 @@ def validar():
         clave = entrada_clave.get()
         resultado = vigenere(mensaje, clave, opcion_descifrado, opcion_alfabeto)
 
+    mensaje_resultado.configure(state="normal")
     mensaje_resultado.delete("0.0", "end")
     mensaje_resultado.insert("0.0", resultado)
+    mensaje_resultado.configure(state="disabled")
 
 def cargar_archivo():
     ruta_archivo = fd.askopenfilename(
