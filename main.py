@@ -1,3 +1,4 @@
+import tkinter.filedialog as fd
 import customtkinter as ctk
 from encriptado import cesar, vigenere
 
@@ -37,6 +38,18 @@ def validar():
 
     mensaje_resultado.delete("0.0", "end")
     mensaje_resultado.insert("0.0", resultado)
+
+def cargar_archivo():
+    ruta_archivo = fd.askopenfilename(
+        title="Seleccionar archivo de texto",
+        filetypes=(("Archivos de texto", "*.txt"), ("Todos los archivos", "*.*"))
+    )
+    if ruta_archivo:
+        with open(ruta_archivo, "r", encoding="utf-8") as archivo:
+            contenido = archivo.read()
+            entrada_mensaje.delete("0.0", "end")
+            entrada_mensaje.insert("0.0", contenido)
+            print(f"Archivo cargado: {ruta_archivo}")
 
 if __name__ == "__main__":
     app = ctk.CTk()
@@ -95,6 +108,9 @@ if __name__ == "__main__":
 
     boton_encriptar = ctk.CTkButton(frame_principal, text="Ejecutar", command=validar)
     boton_encriptar.grid(row=5, column=0, padx=20, pady=10, sticky="ew")
+
+    boton_cargar = ctk.CTkButton(frame_principal, text="Cargar archivo", command=cargar_archivo)
+    boton_cargar.grid(row=6, column=0, padx=20, pady=10, sticky="ew")
 
     frame_mensaje = ctk.CTkFrame(app)
     frame_mensaje.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
