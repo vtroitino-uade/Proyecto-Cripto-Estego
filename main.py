@@ -10,11 +10,17 @@ ALFABETOS = {
 }
 
 def actualizar_alfabeto(seleccion):
+    """
+    Actualiza el estado del campo de entrada de alfabeto personalizado
+    """
     estado = "normal" if seleccion == "Personalizado" else "disabled"
     entrada_alfabeto_personalizado.configure(state=estado)
     print(f"Usando alfabeto: {seleccion}")
 
 def validar():
+    """
+    Valida la entrada del usuario y ejecuta el cifrado o descifrado
+    """
     ALFABETOS["Personalizado"] = entrada_alfabeto_personalizado.get().upper()
     opcion_encriptado = opciones_encriptado.get()
     mensaje = entrada_mensaje.get("0.0", "end-1c")
@@ -34,7 +40,7 @@ def validar():
 
 if __name__ == "__main__":
     app = ctk.CTk()
-    app.title("Codificador/Decodificador")
+    app.title("Encriptador")
     app.geometry("800x400")
     app.grid_rowconfigure(0, weight=1)
     app.grid_columnconfigure(0, weight=1)
