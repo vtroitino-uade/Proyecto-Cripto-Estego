@@ -44,7 +44,7 @@ class TestVigenereASCII(unittest.TestCase):
 
 class TestVigenereAlfabetoIngles(unittest.TestCase):
     """
-    Pruebas para el cifrado Vigenère con alfabeto inglés (A-Z).
+    Pruebas para el cifrado Vigenère con alfabeto inglés.
     """
 
     ENG = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
