@@ -15,7 +15,7 @@ def cifrar_ascii(caracter: str, caracter_clave: str, descifrar: bool) -> str:
     indice_clave = -alfabeto.index(caracter_clave) if descifrar else alfabeto.index(caracter_clave)
     return alfabeto[(alfabeto.index(caracter) + indice_clave) % len(alfabeto)]
 
-def cifrar_caracter(caracter: str, mayus: bool, caracter_clave: int, descifrar: bool, alfabeto: str) -> str:
+def cifrar_caracter(caracter: str, mayus: bool, caracter_clave: str, descifrar: bool, alfabeto: str) -> str:
     """
     Cifra un caracter usando el cifrado Vigenère.
     Si el caracter está en el alfabeto proporcionado, se cifra.
