@@ -25,11 +25,19 @@ def validar():
     ALFABETOS["Personalizado"] = entrada_alfabeto_personalizado.get().upper()
     opcion_encriptado = opciones_encriptado.get()
     mensaje = entrada_mensaje.get("0.0", "end-1c")
+    clave = entrada_clave.get()
     opcion_descifrado = opcion_accion.get()
     opcion_alfabeto = ALFABETOS[opciones_alfabeto.get()]
 
+    if clave == "":
+        print("La clave no puede estar vacía.")
+        return
+    
     if opcion_encriptado == "César":
-        clave = int(entrada_clave.get()) if entrada_clave.get() != "" else 0
+        if not clave.isdigit() and not clave.startswith("-"):
+            print("La clave debe ser un número entero.")
+            return
+        clave = int(entrada_clave.get())
         resultado = cesar(mensaje, clave, opcion_descifrado, opcion_alfabeto)
 
     elif opcion_encriptado == "Vigenère":
