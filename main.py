@@ -66,14 +66,14 @@ if __name__ == "__main__":
     frame_accion.grid_columnconfigure(0, weight=1)
     frame_accion.grid_columnconfigure(1, weight=1)
 
-    opcion_accion = ctk.StringVar(value="Cifrar")
-
+    opcion_accion = ctk.IntVar(value=0)
     radio_cifrar = ctk.CTkRadioButton(
         frame_accion,
         text="Cifrar",
         variable=opcion_accion,
         value=0
     )
+    radio_cifrar.invoke()
     radio_cifrar.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
     radio_descifrar = ctk.CTkRadioButton(
         frame_accion,
