@@ -1,43 +1,51 @@
-def vignere_unicode(mensaje: str, clave: str, descifrar: bool) -> str:
-    resultado = ""
-    longitud_unicode = 1_114_112
-    for indice, letra in enumerate(mensaje.upper()):
-        letra_clave = clave[indice % len(clave)].upper()
-        if descifrar:
-            indice_resultante = (ord(letra) - ord(letra_clave)) % longitud_unicode
-        else:
-            indice_resultante = (ord(letra) + ord(letra_clave)) % longitud_unicode
-        letra_resultante = chr(indice_resultante)
-        resultado += letra_resultante
-    return resultado
+def ascii_imprimibles() -> str:
+    """
+    Devuelve la tabla de caracteres  ascii imprimibles  
+    """
+    return "".join(chr(x) for x in range(32, 127))
+
+def cifrar_ascii(caracter: str, caracter_clave: str, descifrar: bool) -> str:
+    """
+    Cifra un caracter usando el alfabeto ascii imprimible.
+    Si el caracter no es un ascii imprimible, se devuelve el caracter sin cambios.
+    """
+    alfabeto = ascii_imprimibles()
+    if caracter not in alfabeto or caracter_clave not in alfabeto:
+        return caracter
+    indice_clave = -alfabeto.index(caracter_clave) if descifrar else alfabeto.index(caracter_clave)
+    return alfabeto[(alfabeto.index(caracter) + indice_clave) % len(alfabeto)]
+
+def cifrar_caracter(caracter: str, mayus: bool, caracter_clave: int, descifrar: bool, alfabeto: str) -> str:
+    """
+    Cifra un caracter usando el cifrado Vigenère.
+    Si el caracter está en el alfabeto proporcionado, se cifra.
+    Si no, se devuelve el caracter sin cambios.
+    """
+    caracter_mayus = caracter.upper()
+    if caracter_mayus not in alfabeto or caracter_clave not in alfabeto:
+        return caracter
+    indice_clave = -alfabeto.index(caracter_clave) if descifrar else alfabeto.index(caracter_clave)
+    nueva_letra = alfabeto[(alfabeto.index(caracter_mayus) + indice_clave) % len(alfabeto)]
+    return nueva_letra if mayus else nueva_letra.lower()
 
 def vigenere(mensaje: str, clave: str, descifrar: bool = False, alfabeto: str = "") -> str:
     """
     Cifrado Vigenère.
     """
-
-    resultado = ""
-
     if alfabeto == "":
-        return vignere_unicode(mensaje, clave, descifrar)
-
-    for indice, letra in enumerate(mensaje.upper()):
-        if letra in alfabeto:
-
-            indice_mensaje = alfabeto.index(letra)
-            letra_clave = clave[indice % len(clave)].upper()
-            indice_clave = alfabeto.index(letra_clave)
-
-            if descifrar:
-                indice_resultante = (indice_mensaje - indice_clave) % len(alfabeto)
-            else:
-                indice_resultante = (indice_mensaje + indice_clave) % len(alfabeto)
-
-            letra_original = mensaje[indice]
-            letra_resultante = alfabeto[indice_resultante]
-            if letra_original.islower():
-                letra_resultante = letra_resultante.lower()
-            resultado += letra_resultante
-    return resultado
-
-print(vigenere("HOLA", "CLAVE"))
+        return "".join(
+            cifrar_ascii(
+                caracter,
+                clave[indice % len(clave)],
+                descifrar
+            ) for indice, caracter in enumerate(mensaje)
+        )
+    return "".join(
+        cifrar_caracter(
+            caracter,
+            caracter.isupper(),
+            clave[indice % len(clave)].upper(),
+            descifrar,
+            alfabeto
+        ) for indice, caracter in enumerate(mensaje)
+    )
