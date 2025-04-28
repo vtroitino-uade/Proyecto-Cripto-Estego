@@ -31,6 +31,10 @@ def cifrar_caracter(caracter: str, mayus: bool, caracter_clave: str, descifrar: 
 def vigenere(mensaje: str, clave: str, descifrar: bool = False, alfabeto: str = "") -> str:
     """
     Cifrado Vigenère.
+    La clave es una cadena de caracteres que indica el desplazamiento.
+    Si el alfabeto está vacío, se usa el alfabeto ascii imprimible.
+    Si el alfabeto no está vacío, se usa el alfabeto proporcionado.
+    Si el mensaje contiene caracteres que no están en el alfabeto, se devuelven sin cambios.
     """
     if alfabeto == "":
         return "".join(

@@ -27,10 +27,13 @@ def cifrar_caracter(caracter, mayus, clave, alfabeto):
         return nueva_letra if mayus else nueva_letra.lower()
     return caracter
 
-
 def cesar(mensaje: str, clave: int, descifrar: bool = False, alfabeto: str = "") -> str:
     """
-    Cifrado Cesar
+    Cifrado Cesar.
+    La clave es un número entero que indica el desplazamiento.
+    Si el alfabeto está vacío, se usa el alfabeto ascii imprimible.
+    Si el alfabeto no está vacío, se usa el alfabeto proporcionado.
+    Si el mensaje contiene caracteres que no están en el alfabeto, se devuelven sin cambios.
     """
     clave = -clave if descifrar else clave
     if alfabeto == "":
