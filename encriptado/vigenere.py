@@ -15,12 +15,9 @@ def vigenere(mensaje: str, clave: str, descifrar: bool = False, alfabeto: str = 
     """
     Cifrado Vigenère.
     """
-
     resultado = ""
-
     if alfabeto == "":
         return vignere_unicode(mensaje, clave, descifrar)
-
     for indice, letra in enumerate(mensaje.upper()):
         if letra in alfabeto:
 
