@@ -54,10 +54,15 @@ def lsb_matching(imagen: Image.Image, mensaje: str | None = None) -> str | Image
     - PPM (.ppm)
 
     Args:
+<<<<<<< HEAD
         imagen (Image): La imagen en la que se ocultará o de la que se extraerá el mensaje. \
         Debe ser un objeto de la clase Image de PIL.
         mensaje (str | None): El mensaje a ocultar en la imagen. \
         Si es None, se extraerá el mensaje de la imagen.
+=======
+        imagen (Image): La imagen en la que se ocultará o de la que se extraerá el mensaje. Debe ser un objeto de la clase Image de PIL.
+        mensaje (str | None): El mensaje a ocultar en la imagen. Si es None, se extraerá el mensaje de la imagen. Por defecto es None
+>>>>>>> 3a0e6ad24a3fbf30298486031509fb6dd1d5fb76
 
     Returns:
         (str | Image): Si no se proporciona un mensaje, devuelve el mensaje extraído de la imagen. \
