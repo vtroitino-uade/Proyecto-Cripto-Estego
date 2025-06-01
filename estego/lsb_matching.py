@@ -56,26 +56,26 @@ def _decodificar_lsb(imagen: Image.Image) -> str:
         UnicodeDecodeError: Si la conversión de bytes a texto falla.
     """
     imagen_bytes = imagen_a_bytes(imagen)
-
     mensaje_lsb = [byte % 2 for byte in imagen_bytes]
-    mensaje_bytes = [
-        int("".join(map(str, mensaje_lsb[i:i+BYTE])), base=2)
-        for i in range(0, len(mensaje_lsb), BYTE)
-    ]
-
-    mensaje_crudo = bytes(mensaje_bytes)
-
+    mensaje_util = bytearray()
     delimitador_bytes = DELIMITADOR.encode("utf-8")
-    indice_delimitador = mensaje_crudo.find(delimitador_bytes)
-    if indice_delimitador == -1:
-        raise ValueError(
-            "La imagen no contiene un mensaje oculto detectable. "
-            "Verifique que la imagen haya sido previamente codificada con LSB Matching "
-            "y que no haya sido alterada."
-        )
 
-    mensaje_util = mensaje_crudo[:indice_delimitador]
-    return mensaje_util.decode("utf-8")
+    for i in range(0, len(mensaje_lsb), BYTE):
+        byte_bits = mensaje_lsb[i:i + BYTE]
+        if len(byte_bits) < BYTE:
+            break
+
+        byte = int("".join(map(str, byte_bits)), base=2)
+        mensaje_util.append(byte)
+
+        if mensaje_util[-len(delimitador_bytes):] == delimitador_bytes:
+            return mensaje_util[:-len(delimitador_bytes)].decode("utf-8")
+
+    raise ValueError(
+        "La imagen no contiene un mensaje oculto detectable. "
+        "Verifique que la imagen haya sido previamente codificada con LSB Matching "
+        "y que no haya sido alterada."
+    )
 
 def lsb_matching(imagen: Image.Image, mensaje: str | None = None) -> str | Image.Image:
     """
