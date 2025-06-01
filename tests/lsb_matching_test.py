@@ -4,8 +4,9 @@ from PIL import Image
 
 from config.rutas import DIR_TEST_RECURSOS
 from estego.lsb_matching import lsb_matching
+from estego.utils import cargar_imagen
 
-IMAGEN_PRUEBA = Image.open(DIR_TEST_RECURSOS / "imagen_prueba.png")
+IMAGEN_PRUEBA = cargar_imagen(DIR_TEST_RECURSOS / "imagen_prueba.png")
 
 class TestLsbCodificar(unittest.TestCase):
     def test_codificar_mensaje(self):
