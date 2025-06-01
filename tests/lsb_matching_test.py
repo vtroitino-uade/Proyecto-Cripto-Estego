@@ -16,7 +16,7 @@ class TestLsbCodificar(unittest.TestCase):
         self.assertIsInstance(imagen_codificada, Image.Image)
 
     def test_codificar_mensaje_con_delimitador(self):
-        mensaje = f"El delimitador {DELIMITADOR} sirve para indicar el fin del mensaje."
+        mensaje = f"El delimitador {DELIMITADOR} sirve para indicar el fin {DELIMITADOR} del mensaje. {DELIMITADOR}"
         imagen_codificada = lsb_matching(IMAGEN_PRUEBA, mensaje)
         self.assertIsInstance(imagen_codificada, Image.Image)
 
