@@ -45,8 +45,8 @@ class TestLsbDecodificar(unittest.TestCase):
         self.assertEqual(mensaje, mensaje_extraido)
 
     def test_decodificar_mensaje_con_delimitador(self):
-        mensaje_esperado = "El delimitador  sirve para indicar el fin del mensaje."
-        mensaje = f"El delimitador {DELIMITADOR} sirve para indicar el fin del mensaje."
+        mensaje_esperado = "El delimitador sirve para indicar el fin del mensaje."
+        mensaje = f"El delimitador {DELIMITADOR} sirve para indicar el fin {DELIMITADOR} del mensaje. {DELIMITADOR}"
         imagen_codificada = lsb_matching(IMAGEN_PRUEBA, mensaje)
         mensaje_extraido = lsb_matching(imagen_codificada)
         self.assertEqual(mensaje_esperado, mensaje_extraido)

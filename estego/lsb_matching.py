@@ -105,8 +105,7 @@ def lsb_matching(imagen: Image.Image, mensaje: str | None = None) -> str | Image
     if mensaje is None:
         return _decodificar_lsb(imagen)
 
-    if DELIMITADOR in mensaje:
-        mensaje = mensaje.replace(DELIMITADOR, '')
+    mensaje = " ".join(parte.strip() for parte in mensaje.split(DELIMITADOR)).strip()
 
     ancho, alto = imagen.size
     cantidad_bandas = len(imagen.getbands())
@@ -116,8 +115,10 @@ def lsb_matching(imagen: Image.Image, mensaje: str | None = None) -> str | Image
     longitud_mensaje = len(mensaje_bytes)
 
     if longitud_mensaje > longitud_maxima:
-        raise ValueError(f"El mensaje debe ser menor o igual a {longitud_maxima} caracteres. \
-                         O la imagen es demasiado pequeña para ocultar el mensaje.")
+        raise ValueError(
+            f"El mensaje debe ser menor o igual a {longitud_maxima} caracteres."
+            "O la imagen es demasiado pequeña para ocultar el mensaje."
+        )
 
     mensaje_bits = convertir_a_bits(mensaje_bytes)
     return _codificar_lsb(imagen, mensaje_bits)
