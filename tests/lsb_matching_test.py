@@ -3,6 +3,7 @@ import unittest
 from PIL import Image
 
 from config.rutas import DIR_TEST_RECURSOS
+from config.constantes import DELIMITADOR
 from estego.lsb_matching import lsb_matching
 from estego.utils import cargar_imagen
 
@@ -11,6 +12,11 @@ IMAGEN_PRUEBA = cargar_imagen(DIR_TEST_RECURSOS / "imagen_prueba.png")
 class TestLsbCodificar(unittest.TestCase):
     def test_codificar_mensaje(self):
         mensaje = "Hola"
+        imagen_codificada = lsb_matching(IMAGEN_PRUEBA, mensaje)
+        self.assertIsInstance(imagen_codificada, Image.Image)
+
+    def test_codificar_mensaje_con_delimitador(self):
+        mensaje = f"El delimitador {DELIMITADOR} sirve para indicar el fin del mensaje."
         imagen_codificada = lsb_matching(IMAGEN_PRUEBA, mensaje)
         self.assertIsInstance(imagen_codificada, Image.Image)
 
@@ -37,6 +43,13 @@ class TestLsbDecodificar(unittest.TestCase):
         imagen_codificada = lsb_matching(IMAGEN_PRUEBA, mensaje)
         mensaje_extraido = lsb_matching(imagen_codificada)
         self.assertEqual(mensaje, mensaje_extraido)
+
+    def test_decodificar_mensaje_con_delimitador(self):
+        mensaje_esperado = "El delimitador  sirve para indicar el fin del mensaje."
+        mensaje = f"El delimitador {DELIMITADOR} sirve para indicar el fin del mensaje."
+        imagen_codificada = lsb_matching(IMAGEN_PRUEBA, mensaje)
+        mensaje_extraido = lsb_matching(imagen_codificada)
+        self.assertEqual(mensaje_esperado, mensaje_extraido)
 
     def test_decodificar_mensaje_vacio(self):
         imagen_codificada = lsb_matching(IMAGEN_PRUEBA, "")
