@@ -110,7 +110,7 @@ def lsb_matching(imagen: Image.Image, mensaje: str | None = None) -> str | Image
     ancho, alto = imagen.size
     cantidad_bandas = len(imagen.getbands())
     longitud_maxima = (ancho * alto * cantidad_bandas) // BYTE
-    mensaje = mensaje + DELIMITADOR
+    mensaje += DELIMITADOR
     mensaje_bytes = mensaje.encode('utf-8')
     longitud_mensaje = len(mensaje_bytes)
 
