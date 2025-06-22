@@ -6,9 +6,9 @@ import tkinter.filedialog as fd
 import tkinter.messagebox as mb
 import customtkinter as ctk
 
-from encriptado import cesar, vigenere
+from encriptado import cesar, vigenere, xor
 
-CIFRADOS = ("César", "Vigenère")
+CIFRADOS = ("César", "Vigenère", "XOR")
 ALFABETOS = {
     "Español": "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
     "Inglés": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -44,6 +44,8 @@ def _procesar_encriptados(mensaje: str, clave: str, metodo: str, modo: bool, alf
         return _procesar_cesar(mensaje, clave, modo, alfabeto_seleccionado)
     elif metodo == "Vigenère":
         return vigenere(mensaje, clave, modo, alfabeto_seleccionado)
+    elif metodo == "XOR":
+        return xor(mensaje, clave, modo)
 
 def _validar(mensaje: str, clave: str, metodo: str, modo: str, alfabeto_personalizado: str, alfabeto_seleccionado: str, mensaje_resultado: ctk.CTkTextbox):
     """
