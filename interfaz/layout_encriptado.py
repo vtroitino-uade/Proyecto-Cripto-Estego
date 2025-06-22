@@ -2,6 +2,9 @@
 Módulo de interfaz gráfica para la sección de encriptación.
 """
 
+import string
+import random
+
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
 import customtkinter as ctk
@@ -23,6 +26,10 @@ def _actualizar_alfabeto(seleccion, entrada_alfabeto_personalizado):
     estado = "normal" if seleccion == "Personalizado" else "disabled"
     entrada_alfabeto_personalizado.configure(state=estado)
     print(f"Usando alfabeto: {seleccion}")
+
+def _generar_clave_aleatoria(longitud: int = 12) -> str:
+    caracteres = string.ascii_letters + string.digits
+    return ''.join(random.choice(caracteres) for _ in range(longitud))
 
 def _procesar_cesar(mensaje: str, clave: str, modo: bool, alfabeto: str):
     """
@@ -86,6 +93,15 @@ def cargar_archivo(entrada_mensaje: ctk.CTkTextbox) -> None:
             entrada_mensaje.insert("0.0", contenido)
             print(f"Archivo cargado: {ruta_archivo}")
 
+def _actualizar_estado_boton_clave(opciones_encriptado: ctk.CTkOptionMenu, btn_generar_clave: ctk.CTkButton):
+    """
+    Habilita o deshabilita el botón de generar clave según el método de cifrado seleccionado.
+    """
+    if opciones_encriptado.get() == "César":
+        btn_generar_clave.configure(state="disabled")
+    else:
+        btn_generar_clave.configure(state="normal")
+
 def mostrar_layout_encriptado(ventana: ctk.CTkFrame) -> None:
     """
     Muestra el layout de la sección de encriptación en la ventana principal.
@@ -97,11 +113,31 @@ def mostrar_layout_encriptado(ventana: ctk.CTkFrame) -> None:
     frame_principal.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
     frame_principal.grid_columnconfigure(0, weight=1)
 
-    opciones_encriptado = ctk.CTkOptionMenu(frame_principal, values=CIFRADOS)
+    opciones_encriptado = ctk.CTkOptionMenu(
+        frame_principal,
+        values=CIFRADOS,
+        command=lambda _: _actualizar_estado_boton_clave(opciones_encriptado, btn_generar_clave)
+    )
     opciones_encriptado.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
 
-    entrada_clave = ctk.CTkEntry(frame_principal, placeholder_text="Clave")
-    entrada_clave.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
+    frame_clave = ctk.CTkFrame(frame_principal)
+    frame_clave.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
+    frame_clave.grid_columnconfigure(0, weight=1)
+
+    entrada_clave = ctk.CTkEntry(frame_clave, placeholder_text="Clave")
+    entrada_clave.grid(row=0, column=0, sticky="ew")
+
+    btn_generar_clave = ctk.CTkButton(
+        frame_clave,
+        text="Generar",
+        width=100,
+        state="disabled",
+        command=lambda: (
+            entrada_clave.delete(0, "end"),
+            entrada_clave.insert(0, _generar_clave_aleatoria())
+        )
+    )
+    btn_generar_clave.grid(row=0, column=1, padx=(5, 0))
 
     opciones_alfabeto = ctk.CTkOptionMenu(
         frame_principal,
