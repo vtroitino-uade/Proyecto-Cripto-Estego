@@ -1,15 +1,11 @@
-def ascii_imprimibles() -> str:
-    """
-    Devuelve la tabla de caracteres  ascii imprimibles  
-    """
-    return "".join(chr(x) for x in range(32, 127))
+from config.constantes import ASCII_IMPRIMIBLES
 
 def cifrar_ascii(caracter, clave):
     """
     Cifra un caracter usando el alfabeto ascii imprimible.
     Si el caracter no es un ascii imprimible, se devuelve el caracter sin cambios.
     """
-    alfabeto = ascii_imprimibles()
+    alfabeto = ASCII_IMPRIMIBLES
     if caracter in alfabeto:
         nuevo_caracter = alfabeto[(alfabeto.index(caracter) + clave) % len(alfabeto)]
         return nuevo_caracter
