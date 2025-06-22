@@ -7,15 +7,15 @@ def binario_a_texto(binary):
     chars = [binary[i:i+8] for i in range(0, len(binary), 8)]
     return ''.join(chr(int(char, 2)) for char in chars)
 
-def xor(bin_str1, bin_str2):
+def xor_feistel(bin_str1, bin_str2):
     """Realiza XOR entre dos cadenas binarias del mismo tamaño"""
     return ''.join('1' if a != b else '0' for a, b in zip(bin_str1, bin_str2))
 
 def ronda_feistel(left, right, key):
     """Aplica una ronda Feistel"""
-    f_output = xor(right, key)  
+    f_output = xor_feistel(right, key)  
     new_left = right
-    new_right = xor(left, f_output)
+    new_right = xor_feistel(left, f_output)
     return new_left, new_right
 
 def feistel_cifra_binarios(binary_data, rounds, keys):
