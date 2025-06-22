@@ -6,11 +6,10 @@ import tkinter.filedialog as fd
 import tkinter.messagebox as mb
 import customtkinter as ctk
 
-from PIL import Image
 from estego.lsb_matching import lsb_matching
 from estego.utils import cargar_imagen, guardar_imagen
 
-def _ocultar_mensaje(ruta_imagen: str, mensaje: str) -> Image.Image:
+def _ocultar_mensaje(ruta_imagen: str, mensaje: str):
     """
     Devuelve la imagen con el mensaje oculto en la ruta de la imagen proporcionada.
     Guarda la imagen en la misma carpeta con un nombre modificado.
