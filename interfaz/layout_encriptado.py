@@ -24,7 +24,7 @@ def _actualizar_alfabeto(seleccion, entrada_alfabeto_personalizado):
     entrada_alfabeto_personalizado.configure(state=estado)
     print(f"Usando alfabeto: {seleccion}")
 
-def _procesar_cesar(mensaje: str, clave: str, modo: bool, alfabeto_seleccionado: str):
+def _procesar_cesar(mensaje: str, clave: str, modo: bool, alfabeto: str):
     """
     Procesa el cifrado o descifrado usando el método César.
     """
@@ -32,18 +32,16 @@ def _procesar_cesar(mensaje: str, clave: str, modo: bool, alfabeto_seleccionado:
         raise ValueError("La clave debe ser un número entero.")
 
     clave = int(clave)
-    alfabeto = ALFABETOS[alfabeto_seleccionado]
-
     return cesar(mensaje, clave, modo, alfabeto)
 
-def _procesar_encriptados(mensaje: str, clave: str, metodo: str, modo: bool, alfabeto_seleccionado: str):
+def _procesar_encriptados(mensaje: str, clave: str, metodo: str, modo: bool, alfabeto: str):
     """
     Lógica principal de cifrado/descifrado sin interacción con la interfaz.
     """
     if metodo == "César":
-        return _procesar_cesar(mensaje, clave, modo, alfabeto_seleccionado)
+        return _procesar_cesar(mensaje, clave, modo, alfabeto)
     elif metodo == "Vigenère":
-        return vigenere(mensaje, clave, modo, alfabeto_seleccionado)
+        return vigenere(mensaje, clave, modo, alfabeto)
 
 def _validar(mensaje: str, clave: str, metodo: str, modo: str, alfabeto_personalizado: str, alfabeto_seleccionado: str, mensaje_resultado: ctk.CTkTextbox):
     """
@@ -64,7 +62,7 @@ def _validar(mensaje: str, clave: str, metodo: str, modo: str, alfabeto_personal
             clave,
             metodo,
             bool(modo),
-            alfabeto_seleccionado
+            ALFABETOS[alfabeto_seleccionado]
         )
         mensaje_resultado.configure(state="normal")
         mensaje_resultado.delete("0.0", "end")
@@ -179,7 +177,7 @@ def mostrar_layout_encriptado(ventana: ctk.CTkFrame) -> None:
             opciones_encriptado.get(),
             opcion_accion.get(),
             entrada_alfabeto_personalizado.get(),
-            ALFABETOS[opciones_alfabeto.get()],
+            opciones_alfabeto.get(),
             mensaje_resultado
         )
     )
