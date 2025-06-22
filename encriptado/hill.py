@@ -80,6 +80,13 @@ def hill(mensaje: str, clave: np.ndarray, descifrar: bool = False) -> str:
     Returns:
         str: El mensaje cifrado o descifrado.
     """
+    es_clave_valida,error = validar_clave(clave)
+    if not es_clave_valida:
+        raise ValueError(error)
+    if descifrar:
+        return descifrar(mensaje, clave, largo_original=len(mensaje))
+    return cifrar(mensaje, clave)
+
 
 # ---------------------------------------
 # FUNCIÓN PRINCIPAL PARA USO INTERACTIVO

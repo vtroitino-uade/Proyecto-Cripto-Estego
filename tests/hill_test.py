@@ -1,40 +1,44 @@
 import unittest
 import numpy as np
-from encriptado import cifrar, descifrar, validar_clave
+from encriptado import hill
 
-class PruebasCifradoHill(unittest.TestCase):
+class PruebasHillFuncionPrincipal(unittest.TestCase):
 
     def test_cifrado_y_descifrado_2x2(self):
         clave = np.array([[3, 3], [2, 5]])
-        texto = "HOLA"
-        cifrado = cifrar(texto, clave)
-        descifrado = descifrar(cifrado, clave, largo_original=len(texto))
-        self.assertEqual(descifrado, texto.upper())
+        mensaje = "MENSAJE"
+        cifrado = hill(mensaje, clave)
+        descifrado = hill(cifrado, clave, descifrar=True)
+        self.assertEqual(descifrado, mensaje.upper())
 
     def test_cifrado_y_descifrado_3x3(self):
         clave = np.array([[6, 24, 1],
                         [13, 16, 10],
                         [20, 17, 15]])
-        texto = "PRUEBAHILL"
-        cifrado = cifrar(texto, clave)
-        descifrado = descifrar(cifrado, clave, largo_original=len(texto))
-        self.assertEqual(descifrado, texto.upper())
+        mensaje = "CRIPTOGRAFIA"
+        cifrado = hill(mensaje, clave)
+        descifrado = hill(cifrado, clave, descifrar=True)
+        self.assertEqual(descifrado, mensaje.upper())
 
-    def test_clave_no_invertible(self):
-        clave = np.array([[2, 4], [2, 4]])  # Determinante 0
-        texto = "PRUEBA"
+    def test_clave_invalida_formato(self):
+        clave = np.array([[1, 2, 3], [4, 5, 6]])  # No es cuadrada
+        mensaje = "TEXTO"
         with self.assertRaises(ValueError):
-            cifrar(texto, clave)
+            hill(mensaje, clave)
 
-    def test_validar_clave_valida(self):
+    def test_clave_invalida_no_invertible(self):
+        clave = np.array([[2, 4], [2, 4]])  # Determinante = 0 → no invertible
+        mensaje = "HILL"
+        with self.assertRaises(ValueError):
+            hill(mensaje, clave)
+
+    def test_mensaje_con_letras_minusculas_y_espacios(self):
         clave = np.array([[3, 3], [2, 5]])
-        es_valida, _ = validar_clave(clave)
-        self.assertTrue(es_valida)
-
-    def test_validar_clave_invalida(self):
-        clave = np.array([[2, 4], [2, 4]])
-        es_valida, _ = validar_clave(clave)
-        self.assertFalse(es_valida)
+        mensaje = "hola mundo"
+        cifrado = hill(mensaje, clave)
+        descifrado = hill(cifrado, clave, descifrar=True)
+        # Solo compara las letras válidas (sin espacios)
+        self.assertEqual(descifrado, "HOLAMUNDO")
 
 if __name__ == "__main__":
     unittest.main()
