@@ -21,9 +21,6 @@ def xor(mensaje: str, clave: str, descifrar: bool = False) -> str:
     Raises:
         ValueError: Si la clave está vacía.
     """
-    if not clave:
-        raise ValueError("La clave no puede estar vacía.")
-
     if descifrar:
         mensaje_bytes = base64.b64decode(mensaje)
     else:

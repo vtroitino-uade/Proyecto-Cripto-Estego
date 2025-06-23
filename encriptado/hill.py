@@ -7,7 +7,7 @@ def inverso_modular(a, m):
             return i
     return None
 
-def validar_clave(matriz):
+def validar_clave(matriz: np.ndarray):
     if matriz.shape[0] != matriz.shape[1]:
         return False, "La matriz clave no es cuadrada."
     determinante = int(round(np.linalg.det(matriz))) % TAM_ALFABETO
