@@ -4,15 +4,16 @@ Módulo de interfaz gráfica para la sección de encriptación.
 
 import string
 import random
+import base64
 
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
 import numpy as np
 import customtkinter as ctk
 
-from encriptado import cesar, vigenere, xor, hill, validar_clave
+from encriptado import cesar, vigenere, xor, feistel, hill, validar_clave
 
-CIFRADOS = ("César", "Vigenère", "XOR", "Hill")
+CIFRADOS = ("César", "Vigenère", "XOR", "Feistel", "Hill")
 ALFABETOS = {
     "Español": "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
     "Inglés": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -58,6 +59,33 @@ def _procesar_cesar(mensaje: str, clave: str, modo: bool, alfabeto: str):
     clave = int(clave)
     return cesar(mensaje, clave, modo, alfabeto)
 
+def _procesar_feistel(mensaje: str, clave: str, descifrar: bool):
+    """
+    Procesa el cifrado o descifrado usando el método Feistel.
+
+    La clave debe ingresarse como un texto que se convertirá a binario.
+    """
+    if ":" not in clave:
+        raise ValueError("La clave debe tener el formato '<clave>:<rondas>'.")
+
+    clave_maestra, rondas = clave.strip().split(":", 1)
+
+    if rondas.isdigit() and int(rondas) < 1:
+        raise ValueError("El número de rondas debe ser un entero positivo.")
+
+    subclaves = feistel.derivar_keys_desde_clave(clave_maestra, int(rondas))
+
+    if descifrar:
+        mensaje = base64.b64decode(mensaje).decode()
+        mensaje_binario = feistel.texto_a_binario(mensaje)
+        resultado_binario = feistel.feistel_descifra_binarios(mensaje_binario, int(rondas), subclaves)
+        return feistel.binario_a_texto(resultado_binario)
+
+    mensaje_binario = feistel.texto_a_binario(mensaje)
+    resultado_binario = feistel.feistel_cifra_binarios(mensaje_binario, int(rondas), subclaves)
+    resultado = feistel.binario_a_texto(resultado_binario).encode()
+    return base64.b64encode(resultado).decode()
+
 def _procesar_hill(mensaje: str, clave: str, modo: bool):
     """
     Procesa el cifrado o descifrado usando el método Hill.
@@ -99,6 +127,8 @@ def _procesar_encriptados(mensaje: str, clave: str, metodo: str, modo: bool, alf
         return vigenere(mensaje, clave, modo, alfabeto)
     elif metodo == "XOR":
         return xor(mensaje, clave, modo)
+    elif metodo == "Feistel":
+        return _procesar_feistel(mensaje, clave, modo)
     elif metodo == "Hill":
         return _procesar_hill(mensaje, clave, modo)
 
@@ -149,7 +179,7 @@ def _actualizar_estado_boton_clave(opciones_encriptado: ctk.CTkOptionMenu, btn_g
     """
     Habilita o deshabilita el botón de generar clave según el método de cifrado seleccionado.
     """
-    if opciones_encriptado.get() == "César":
+    if opciones_encriptado.get() in ("César", "Feistel"):
         btn_generar_clave.configure(state="disabled")
     else:
         btn_generar_clave.configure(state="normal")
