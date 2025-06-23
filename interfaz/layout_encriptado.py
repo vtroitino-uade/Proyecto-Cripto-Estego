@@ -7,11 +7,12 @@ import random
 
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
+import numpy as np
 import customtkinter as ctk
 
-from encriptado import cesar, vigenere, xor
+from encriptado import cesar, vigenere, xor, hill, validar_clave
 
-CIFRADOS = ("César", "Vigenère", "XOR")
+CIFRADOS = ("César", "Vigenère", "XOR", "Hill")
 ALFABETOS = {
     "Español": "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
     "Inglés": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -27,7 +28,23 @@ def _actualizar_alfabeto(seleccion, entrada_alfabeto_personalizado):
     entrada_alfabeto_personalizado.configure(state=estado)
     print(f"Usando alfabeto: {seleccion}")
 
-def _generar_clave_aleatoria(longitud: int = 12) -> str:
+def _generar_matriz_hill(n: int) -> str:
+    """
+    Genera una matriz aleatoria n×n (n = 2 o 3) con valores entre 0 y 25
+    que sea invertible módulo 26.
+    """
+    while True:
+        datos = [random.randint(0, 25) for _ in range(n * n)]
+        matriz = np.array(datos, dtype=int).reshape((n, n))
+        if validar_clave(matriz)[0]:
+            break
+
+    clave_str = " ".join(" ".join(str(num) for num in fila) for fila in matriz)
+    return clave_str
+
+def _generar_clave_aleatoria(metodo: str, longitud: int = 12) -> str:
+    if metodo == "Hill":
+        return _generar_matriz_hill(random.choice([2, 3]))
     caracteres = string.ascii_letters + string.digits
     return ''.join(random.choice(caracteres) for _ in range(longitud))
 
@@ -41,6 +58,37 @@ def _procesar_cesar(mensaje: str, clave: str, modo: bool, alfabeto: str):
     clave = int(clave)
     return cesar(mensaje, clave, modo, alfabeto)
 
+def _procesar_hill(mensaje: str, clave: str, modo: bool):
+    """
+    Procesa el cifrado o descifrado usando el método Hill.
+
+    La clave debe ingresarse como una matriz 2x2 o 3x3, con números enteros
+    entre 0 y 25, separados por espacios y líneas. Ejemplo:
+    
+    3 3 2 5 (Matriz 2x2)
+    2 4 1 3 5 7 3 5 7 (Matriz 3x3)
+    """
+    try:
+        numeros = list(map(int, clave.strip().split()))
+
+        # Validar rango de cada número
+        if any(not (0 <= n <= 25) for n in numeros):
+            raise ValueError("Los valores deben estar entre 0 y 25.")
+
+        if len(numeros) == 4:
+            n = 2
+        elif len(numeros) == 9:
+            n = 3
+        else:
+            raise ValueError("La clave debe tener 4 (2x2) o 9 (3x3) números enteros.")
+
+        matriz_np = np.array(numeros, dtype=int).reshape((n, n))
+
+        return hill(mensaje, matriz_np, modo)
+
+    except ValueError as exc:
+        raise ValueError(exc) from exc
+
 def _procesar_encriptados(mensaje: str, clave: str, metodo: str, modo: bool, alfabeto: str):
     """
     Lógica principal de cifrado/descifrado sin interacción con la interfaz.
@@ -51,6 +99,8 @@ def _procesar_encriptados(mensaje: str, clave: str, metodo: str, modo: bool, alf
         return vigenere(mensaje, clave, modo, alfabeto)
     elif metodo == "XOR":
         return xor(mensaje, clave, modo)
+    elif metodo == "Hill":
+        return _procesar_hill(mensaje, clave, modo)
 
 def _validar(mensaje: str, clave: str, metodo: str, modo: str, alfabeto_personalizado: str, alfabeto_seleccionado: str, mensaje_resultado: ctk.CTkTextbox):
     """
@@ -136,7 +186,9 @@ def mostrar_layout_encriptado(ventana: ctk.CTkFrame) -> None:
         state="disabled",
         command=lambda: (
             entrada_clave.delete(0, "end"),
-            entrada_clave.insert(0, _generar_clave_aleatoria())
+            entrada_clave.insert(0, _generar_clave_aleatoria(
+                opciones_encriptado.get()
+            ))
         )
     )
     btn_generar_clave.grid(row=0, column=1, padx=(5, 0))

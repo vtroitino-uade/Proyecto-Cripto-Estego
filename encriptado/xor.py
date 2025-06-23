@@ -14,7 +14,7 @@ def xor(mensaje: str, clave: str, descifrar: bool = False) -> str:
         mensaje (str): El mensaje a cifrar o descifrar.
         clave (str): La clave para el cifrado o descifrado.
         descifrar (bool): Si es True, descifra el mensaje; si es False, lo cifra.
-    
+
     Returns:
         str: El mensaje cifrado en o descifrado en formato base64.
 
@@ -31,4 +31,4 @@ def xor(mensaje: str, clave: str, descifrar: bool = False) -> str:
 
     clave_bytes = clave.encode('utf-8')
     resultado_bytes = bytes([m ^ clave_bytes[i % len(clave_bytes)] for i, m in enumerate(mensaje_bytes)])
-    return  resultado_bytes.decode('utf-8') if descifrar else base64.b64encode(resultado_bytes).decode('utf-8')
+    return resultado_bytes.decode('utf-8') if descifrar else base64.b64encode(resultado_bytes).decode('utf-8')

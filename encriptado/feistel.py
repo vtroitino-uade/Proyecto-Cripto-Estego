@@ -13,7 +13,7 @@ def xor_feistel(bin_str1, bin_str2):
 
 def ronda_feistel(left, right, key):
     """Aplica una ronda Feistel"""
-    f_output = xor_feistel(right, key)  
+    f_output = xor_feistel(right, key)
     new_left = right
     new_right = xor_feistel(left, f_output)
     return new_left, new_right
@@ -25,7 +25,7 @@ def feistel_cifra_binarios(binary_data, rounds, keys):
 
     for i in range(rounds):
         left, right = ronda_feistel(left, right, keys[i])
-    return left + right  
+    return left + right
 
 def feistel_descifra_binarios(cipher_binary, rounds, keys):
     """Descifra datos binarios cifrados con red Feistel"""

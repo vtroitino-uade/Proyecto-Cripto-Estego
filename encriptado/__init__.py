@@ -10,4 +10,4 @@ from .feistel import (
     feistel_descifra_binarios,
     generar_keys
 )
-from .hill import hill
+from .hill import hill, validar_clave

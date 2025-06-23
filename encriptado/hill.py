@@ -1,5 +1,4 @@
 import numpy as np
-
 from config.constantes import TAM_ALFABETO, CARACTER_RELLENO
 
 def inverso_modular(a, m):
@@ -28,27 +27,40 @@ def rellenar_texto(texto, tam_bloque):
         texto += CARACTER_RELLENO * (tam_bloque - resto)
     return texto
 
-def cifrar(texto, clave):
+def cifrar_hill(texto, clave):
     es_valida, mensaje = validar_clave(clave)
     if not es_valida:
         raise ValueError(mensaje)
 
     tam_bloque = clave.shape[0]
+    texto = ''.join(filter(str.isalpha, texto.upper()))
+    largo_original = len(texto)
     texto = rellenar_texto(texto, tam_bloque)
     numeros = texto_a_numeros(texto)
 
     texto_cifrado = []
     for i in range(0, len(numeros), tam_bloque):
-        bloque = np.array(numeros[i:i+tam_bloque]).reshape((tam_bloque, 1))
+        bloque = numeros[i:i+tam_bloque]
+        if len(bloque) < tam_bloque:
+            bloque += [ord(CARACTER_RELLENO) - ord('A')] * (tam_bloque - len(bloque))
+        bloque = np.array(bloque).reshape((tam_bloque, 1))
         resultado = np.dot(clave, bloque) % TAM_ALFABETO
         texto_cifrado.extend(resultado.flatten())
 
-    return numeros_a_texto(texto_cifrado)
+    texto_cifrado = numeros_a_texto(texto_cifrado)
+    largo_str = str(largo_original).zfill(3)
+    return largo_str + texto_cifrado
 
-def descifrar(texto_cifrado, clave, largo_original=None):
+def descifrar_hill(texto_cifrado, clave):
     es_valida, mensaje = validar_clave(clave)
     if not es_valida:
         raise ValueError(mensaje)
+
+    try:
+        largo_original = int(texto_cifrado[:3])
+        texto_cifrado = texto_cifrado[3:]
+    except ValueError:
+        raise ValueError("El texto cifrado no contiene información del largo original.")
 
     determinante = int(round(np.linalg.det(clave))) % TAM_ALFABETO
     inverso = inverso_modular(determinante, TAM_ALFABETO)
@@ -66,11 +78,12 @@ def descifrar(texto_cifrado, clave, largo_original=None):
         texto_descifrado.extend(resultado.flatten())
 
     texto_final = numeros_a_texto(texto_descifrado)
-    return texto_final if largo_original is None else texto_final[:largo_original]
+    return texto_final[:largo_original]
 
 def hill(mensaje: str, clave: np.ndarray, descifrar: bool = False) -> str:
     """
     Cifra o descifra un mensaje usando el cifrado Hill con la clave proporcionada.
+    El largo original del mensaje se codifica dentro del mensaje cifrado.
 
     Args:
         mensaje (str): El mensaje a cifrar o descifrar.
@@ -80,45 +93,6 @@ def hill(mensaje: str, clave: np.ndarray, descifrar: bool = False) -> str:
     Returns:
         str: El mensaje cifrado o descifrado.
     """
-    es_clave_valida,error = validar_clave(clave)
-    if not es_clave_valida:
-        raise ValueError(error)
     if descifrar:
-        return descifrar(mensaje, clave, largo_original=len(mensaje))
-    return cifrar(mensaje, clave)
-
-
-# ---------------------------------------
-# FUNCIÓN PRINCIPAL PARA USO INTERACTIVO
-# ---------------------------------------
-# def main():
-#     import sys
-
-#     print("=== CIFRADO HILL ===")
-#     opcion = input("¿Desea cifrar (C) o descifrar (D)? ").strip().upper()
-
-#     if opcion not in ('C', 'D'):
-#         print("Opción inválida.")
-#         sys.exit()
-
-#     texto = input("Ingrese el texto: ").strip()
-
-#     tipo = int(input("¿Clave 2x2 (2) o 3x3 (3)?: ").strip())
-#     if tipo == 2:
-#         print("Ingrese la clave 2x2 (4 números en total):")
-#         valores = [int(input(f"Elemento {i+1}: ")) for i in range(4)]
-#         clave = np.array(valores).reshape((2, 2))
-#     elif tipo == 3:
-#         print("Ingrese la clave 3x3 (9 números en total):")
-#         valores = [int(input(f"Elemento {i+1}: ")) for i in range(9)]
-#         clave = np.array(valores).reshape((3, 3))
-#     else:
-#         print("Tamaño de matriz no válido.")
-#         sys.exit()
-
-#     if opcion == 'C':
-#         resultado = cifrar(texto, clave)
-#         print(" Texto cifrado:", resultado)
-#     else:
-#         resultado = descifrar(texto, clave)
-#         print(" Texto descifrado:", resultado)
+        return descifrar_hill(mensaje, clave)
+    return cifrar_hill(mensaje, clave)
