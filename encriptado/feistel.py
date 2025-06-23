@@ -36,7 +36,17 @@ def feistel_descifra_binarios(cipher_binary, rounds, keys):
         right, left = ronda_feistel(right, left, keys[i])
     return left + right
 
-def generar_keys(rounds, key_length=8):
-    """Genera claves simples (aleatorias o fijas) para cada ronda"""
-    import random
-    return [format(random.randint(0, 2**key_length - 1), f'0{key_length}b') for _ in range(rounds)]
+def derivar_keys_desde_clave(clave_maestra, rounds, key_length=8):
+    """
+    Deriva subclaves desde una clave maestra para cada ronda.
+    clave_maestra: string (texto)
+    key_length: tamaño en bits de cada subclave
+    """
+    bin_key = texto_a_binario(clave_maestra)
+    total_bits = rounds * key_length
+    if len(bin_key) < total_bits:
+        bin_key = (bin_key * ((total_bits // len(bin_key)) + 1))[:total_bits]
+    else:
+        bin_key = bin_key[:total_bits]
+
+    return [bin_key[i * key_length: (i + 1) * key_length] for i in range(rounds)]
