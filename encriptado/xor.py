@@ -17,9 +17,6 @@ def xor(mensaje: str, clave: str, descifrar: bool = False) -> str:
 
     Returns:
         str: El mensaje cifrado en o descifrado en formato base64.
-
-    Raises:
-        ValueError: Si la clave está vacía.
     """
     if descifrar:
         mensaje_bytes = base64.b64decode(mensaje)
