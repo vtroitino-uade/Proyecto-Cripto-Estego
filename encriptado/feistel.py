@@ -1,52 +1,85 @@
-def texto_a_binario(text):
-    """Convierte texto a binario"""
-    return ''.join(format(ord(c), '08b') for c in text)
+import base64
+from config.constantes import TAM_BLOQUE, TAM_MEDIO_BLOQUE, CARACTER_RELLENO
 
-def binario_a_texto(binary):
-    """Convierte binario a texto"""
-    chars = [binary[i:i+8] for i in range(0, len(binary), 8)]
-    return ''.join(chr(int(char, 2)) for char in chars)
+def _xor_feistel(bloque: bytes, subclave: bytes) -> bytes:
+    return bytes(c ^ k for c, k in zip(bloque, subclave))
 
-def xor_feistel(bin_str1, bin_str2):
-    """Realiza XOR entre dos cadenas binarias del mismo tamaño"""
-    return ''.join('1' if a != b else '0' for a, b in zip(bin_str1, bin_str2))
+def _generar_bloques(mensaje_bytes: bytes, clave_bytes: bytes, rondas: int) -> tuple[list[bytes], list[bytes], int]:
+    bloques_mensaje = []
+    bloques_clave = []
 
-def ronda_feistel(left, right, key):
-    """Aplica una ronda Feistel"""
-    f_output = xor_feistel(right, key)
-    new_left = right
-    new_right = xor_feistel(left, f_output)
-    return new_left, new_right
+    for i in range(0, len(mensaje_bytes), TAM_BLOQUE):
+        bloque = mensaje_bytes[i:i+TAM_BLOQUE]
+        bloque = bloque.ljust(TAM_BLOQUE, CARACTER_RELLENO.encode())
+        bloques_mensaje.append(bloque)
 
-def feistel_cifra_binarios(binary_data, rounds, keys):
-    """Cifra datos binarios usando red Feistel"""
-    half = len(binary_data) // 2
-    left, right = binary_data[:half], binary_data[half:]
+    tam_ultimo_bloque = len(mensaje_bytes) % TAM_BLOQUE
+    relleno = TAM_BLOQUE - tam_ultimo_bloque
 
-    for i in range(rounds):
-        left, right = ronda_feistel(left, right, keys[i])
-    return left + right
+    for i in range(rondas):
+        tam_clave = len(clave_bytes)
+        inicio = (i * TAM_MEDIO_BLOQUE) % tam_clave
+        fin = inicio + TAM_MEDIO_BLOQUE
 
-def feistel_descifra_binarios(cipher_binary, rounds, keys):
-    """Descifra datos binarios cifrados con red Feistel"""
-    half = len(cipher_binary) // 2
-    left, right = cipher_binary[:half], cipher_binary[half:]
+        if fin <= tam_clave:
+            subclave = clave_bytes[inicio:fin]
+        else:
+            l = clave_bytes[inicio:]
+            r = clave_bytes[:fin - tam_clave]
+            subclave = l + r
 
-    for i in reversed(range(rounds)):
-        right, left = ronda_feistel(right, left, keys[i])
-    return left + right
+        subclave = subclave.ljust(TAM_MEDIO_BLOQUE, CARACTER_RELLENO.encode())
+        bloques_clave.append(subclave)
 
-def derivar_keys_desde_clave(clave_maestra, rounds, key_length=8):
+    return bloques_mensaje, bloques_clave, relleno
+
+def _feistel_bloque(bloque: bytes, subclaves: list[bytes]) -> bytes:
+    l = bloque[:TAM_MEDIO_BLOQUE]
+    r = bloque[TAM_MEDIO_BLOQUE:]
+
+    for k in subclaves:
+        nuevo_r = _xor_feistel(l, _xor_feistel(r, k))
+        l, r = r, nuevo_r
+
+    return r + l
+
+def feistel(mensaje: str, clave: str, rondas: int, descifrar: bool = False) -> str:
     """
-    Deriva subclaves desde una clave maestra para cada ronda.
-    clave_maestra: string (texto)
-    key_length: tamaño en bits de cada subclave
+    Cifra o descifra un mensaje usando la red Feistel.
+
+    Args:
+        mensaje (str): El mensaje a cifrar o descifrar.
+        clave (str): La clave para el cifrado o descifrado.
+        rondas (int): Número de rondas de cifrado.
+    Returns:
+        str: El mensaje cifrado o descifrado en formato base64.
+    Raises:
+        ValueError: Si el mensaje no está en el formato esperado para descifrar.
     """
-    bin_key = texto_a_binario(clave_maestra)
-    total_bits = rounds * key_length
-    if len(bin_key) < total_bits:
-        bin_key = (bin_key * ((total_bits // len(bin_key)) + 1))[:total_bits]
+
+    if descifrar:
+        try:
+            mensaje, relleno_a_eliminar = mensaje.rsplit(":", 1)
+            relleno_a_eliminar = int(relleno_a_eliminar)
+            mensaje_bytes = base64.b64decode(mensaje)
+        except ValueError as e:
+            raise ValueError("Formato de mensaje inválido para descifrar (esperaba 'base64:relleno')") from e
     else:
-        bin_key = bin_key[:total_bits]
+        mensaje_bytes = mensaje.encode()
 
-    return [bin_key[i * key_length: (i + 1) * key_length] for i in range(rounds)]
+    clave_bytes = clave.encode()
+    bloques, subclaves, cant_relleno = _generar_bloques(mensaje_bytes, clave_bytes, rondas)
+
+    if descifrar:
+        subclaves = subclaves[::-1]
+
+    bloques_cifrados = [
+        _feistel_bloque(bloque, subclaves)
+        for bloque in bloques
+    ]
+    resultado = b''.join(bloques_cifrados)
+
+    if descifrar:
+        return resultado[:-relleno_a_eliminar].decode()
+
+    return base64.b64encode(resultado).decode() + f":{cant_relleno}"

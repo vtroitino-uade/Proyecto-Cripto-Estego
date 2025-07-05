@@ -73,18 +73,7 @@ def _procesar_feistel(mensaje: str, clave: str, descifrar: bool):
     if rondas.isdigit() and int(rondas) < 1:
         raise ValueError("El número de rondas debe ser un entero positivo.")
 
-    subclaves = feistel.derivar_keys_desde_clave(clave_maestra, int(rondas))
-
-    if descifrar:
-        mensaje = base64.b64decode(mensaje).decode()
-        mensaje_binario = feistel.texto_a_binario(mensaje)
-        resultado_binario = feistel.feistel_descifra_binarios(mensaje_binario, int(rondas), subclaves)
-        return feistel.binario_a_texto(resultado_binario)
-
-    mensaje_binario = feistel.texto_a_binario(mensaje)
-    resultado_binario = feistel.feistel_cifra_binarios(mensaje_binario, int(rondas), subclaves)
-    resultado = feistel.binario_a_texto(resultado_binario).encode()
-    return base64.b64encode(resultado).decode()
+    return feistel(mensaje, clave_maestra, int(rondas), descifrar)
 
 def _procesar_hill(mensaje: str, clave: str, modo: bool):
     """
