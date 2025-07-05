@@ -51,6 +51,7 @@ def feistel(mensaje: str, clave: str, rondas: int, descifrar: bool = False) -> s
         mensaje (str): El mensaje a cifrar o descifrar.
         clave (str): La clave para el cifrado o descifrado.
         rondas (int): Número de rondas de cifrado.
+        descifrar (bool): Si es True, descifra el mensaje; si es False, lo cifra.
     Returns:
         str: El mensaje cifrado o descifrado en formato base64.
     Raises:
