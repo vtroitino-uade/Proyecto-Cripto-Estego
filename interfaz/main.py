@@ -2,6 +2,7 @@ import customtkinter as ctk
 
 from interfaz.layout_encriptado import mostrar_layout_encriptado
 from interfaz.layout_estego import mostrar_layout_estego
+from log import logging
 
 def _cargar_layout(nombre_tab: str, ventana: ctk.CTkFrame) -> None:
     """
@@ -15,8 +16,10 @@ def _cargar_layout(nombre_tab: str, ventana: ctk.CTkFrame) -> None:
         ValueError: Si el nombre del tab no es reconocido.
     """
     if nombre_tab == "Encriptación":
+        logging.info("Seleccionando layout de Encriptación")
         mostrar_layout_encriptado(ventana)
     elif nombre_tab == "Esteganografía":
+        logging.info("Seleccionando layout de Esteganografía")
         mostrar_layout_estego(ventana)
 
 def _cargar_interfaz() -> ctk.CTk:

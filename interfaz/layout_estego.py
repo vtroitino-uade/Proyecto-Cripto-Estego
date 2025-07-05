@@ -8,6 +8,7 @@ import customtkinter as ctk
 
 from estego.lsb_matching import lsb_matching
 from estego.utils import cargar_imagen, guardar_imagen
+from log import logger
 
 def _ocultar_mensaje(ruta_imagen: str, mensaje: str):
     """
@@ -17,6 +18,7 @@ def _ocultar_mensaje(ruta_imagen: str, mensaje: str):
     imagen = cargar_imagen(ruta_imagen)
     imagen_ocultada = lsb_matching(imagen, mensaje)
     ruta_salida = guardar_imagen(imagen_ocultada, ruta_imagen)
+    logger.info("Mensaje oculto con éxito")
     mb.showinfo("Éxito", f"Imagen guardada en: {ruta_salida}")
 
 def _extraer_mensaje(ruta_imagen: str) -> str:
@@ -37,6 +39,7 @@ def _validar(modo: str, ruta: str, mensaje: str, salida: ctk.CTkTextbox):
             salida.delete("0.0", "end")
             salida.insert("0.0", resultado)
             salida.configure(state="disabled")
+            logger.info("Mensaje extraído con éxito.")
             return
 
         if not mensaje:
@@ -44,8 +47,10 @@ def _validar(modo: str, ruta: str, mensaje: str, salida: ctk.CTkTextbox):
 
         _ocultar_mensaje(ruta, mensaje)
     except FileNotFoundError as e:
+        logger.error("Archivo no encontrado: %s", e)
         mb.showerror("Error", f"Archivo no encontrado: {e}")
     except ValueError as e:
+        logger.error(e)
         mb.showerror("Error", f"{e}")
 
 def _seleccionar_imagen(ruta_var: ctk.StringVar):
@@ -56,6 +61,7 @@ def _seleccionar_imagen(ruta_var: ctk.StringVar):
         )]
     )
     if ruta:
+        logger.info("Imagen cargada: %s", ruta)
         ruta_var.set(f"Imagen cargada: {ruta}")
 
 def mostrar_layout_estego(ventana: ctk.CTkFrame):

@@ -7,3 +7,4 @@ from pathlib import Path
 DIR_BASE = Path(__file__).resolve().parent.parent
 DIR_TESTS = DIR_BASE / 'tests'
 DIR_TEST_RECURSOS = DIR_TESTS / "recursos"
+DIR_LOGS = DIR_BASE / 'logs'

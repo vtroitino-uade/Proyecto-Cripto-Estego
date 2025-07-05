@@ -4,7 +4,6 @@ Módulo de interfaz gráfica para la sección de encriptación.
 
 import string
 import random
-import base64
 
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
@@ -12,6 +11,7 @@ import numpy as np
 import customtkinter as ctk
 
 from encriptado import cesar, vigenere, xor, feistel, hill, validar_clave
+from log import logger
 
 CIFRADOS = ("César", "Vigenère", "XOR", "Feistel", "Hill")
 ALFABETOS = {
@@ -27,7 +27,7 @@ def _actualizar_alfabeto(seleccion, entrada_alfabeto_personalizado):
     """
     estado = "normal" if seleccion == "Personalizado" else "disabled"
     entrada_alfabeto_personalizado.configure(state=estado)
-    print(f"Usando alfabeto: {seleccion}")
+    logger.info("Usando alfabeto: %s", seleccion)
 
 def _generar_matriz_hill(n: int) -> str:
     """
@@ -73,6 +73,12 @@ def _procesar_feistel(mensaje: str, clave: str, descifrar: bool):
     if rondas.isdigit() and int(rondas) < 1:
         raise ValueError("El número de rondas debe ser un entero positivo.")
 
+    info_modo = "descifró" if descifrar else "cifró"
+    logger.info("Se %s con Feistel usando clave: %s y rondas: %d",
+        info_modo,
+        clave_maestra,
+        int(rondas)
+    )
     return feistel(mensaje, clave_maestra, int(rondas), descifrar)
 
 def _procesar_hill(mensaje: str, clave: str, modo: bool):
@@ -142,11 +148,20 @@ def _validar(mensaje: str, clave: str, metodo: str, modo: str, alfabeto_personal
             bool(modo),
             ALFABETOS[alfabeto_seleccionado]
         )
+
+        info_modo = "descifró" if bool(modo) else "cifró"
+        logger.info("Se %s con %s usando clave: %s",
+            info_modo,
+            metodo,
+            clave
+        )
+
         mensaje_resultado.configure(state="normal")
         mensaje_resultado.delete("0.0", "end")
         mensaje_resultado.insert("0.0", resultado)
         mensaje_resultado.configure(state="disabled")
     except ValueError as e:
+        logger.error(e)
         mb.showerror("Error", e)
 
 def cargar_archivo(entrada_mensaje: ctk.CTkTextbox) -> None:
@@ -162,7 +177,9 @@ def cargar_archivo(entrada_mensaje: ctk.CTkTextbox) -> None:
             contenido = archivo.read()
             entrada_mensaje.delete("0.0", "end")
             entrada_mensaje.insert("0.0", contenido)
+            logger.info("Archivo cargado: %s", ruta_archivo)
             print(f"Archivo cargado: {ruta_archivo}")
+        logger.info("Contenido del archivo cargado en el campo de mensaje.")
 
 def _actualizar_estado_boton_clave(opciones_encriptado: ctk.CTkOptionMenu, btn_generar_clave: ctk.CTkButton):
     """
