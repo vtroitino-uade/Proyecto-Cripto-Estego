@@ -112,8 +112,11 @@ def _procesar_hill(mensaje: str, clave: str, modo: bool):
     2 4 1 3 5 7 3 5 7 (Matriz 3x3)
     """
     try:
-        numeros = list(map(int, clave.strip().split()))
+        numeros_string = clave.strip().split()
+        if any(not numero.isdigit() for numero in numeros_string):
+            raise ValueError("Los valores de la matriz deben ser un valor entero.")
 
+        numeros = list(map(int, numeros_string))
         # Validar rango de cada número
         if any(not (0 <= n <= 25) for n in numeros):
             raise ValueError("Los valores deben estar entre 0 y 25.")
@@ -220,7 +223,6 @@ def mostrar_layout_encriptado(ventana: ctk.CTkFrame) -> None:
     ventana.grid_columnconfigure(0, weight=1)
     ventana.grid_columnconfigure(1, weight=2)
     ventana.grid_columnconfigure(2, weight=1)
-
 
     frame_principal = ctk.CTkFrame(ventana)
     frame_principal.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
