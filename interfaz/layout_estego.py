@@ -64,11 +64,13 @@ def _seleccionar_imagen(ruta_var: ctk.StringVar):
         logger.info("Imagen cargada: %s", ruta)
         ruta_var.set(f"Imagen cargada: {ruta}")
 
-def _copiar_al_portapapeles(textbox: ctk.CTkTextbox):
+def _copiar_al_portapapeles(textbox: ctk.CTkTextbox, boton: ctk.CTkButton) -> None:
     contenido = textbox.get("0.0", "end-1c")
     textbox.clipboard_clear()
     textbox.clipboard_append(contenido)
-    logger.info("Contenido copiado al portapapeles.")
+    boton.configure(text="✅", font=("Arial", 15))
+    boton.after(2000, lambda: boton.configure(text="📋", font=("Arial", 20)))
+    logger.info("Resultado copiado al portapapeles.")
 
 def mostrar_layout_estego(ventana: ctk.CTkFrame):
     """
@@ -113,6 +115,18 @@ def mostrar_layout_estego(ventana: ctk.CTkFrame):
 
     salida_mensaje = ctk.CTkTextbox(frame_principal, height=100, state="disabled")
     salida_mensaje.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
+    btn_copiar = ctk.CTkButton(
+        master=salida_mensaje,
+        text="📋",
+        width=30,
+        font=("Arial", 20),
+        fg_color="transparent",
+        hover_color="#3a3b3c",
+        text_color="#cccccc",
+        anchor="center"
+    )
+    btn_copiar.place(relx=1.0, rely=1.0, anchor="se", x=-10, y=-10)
+    btn_copiar.configure(command=lambda: _copiar_al_portapapeles(salida_mensaje, btn_copiar))
 
     boton_ejecutar = ctk.CTkButton(
         frame_principal,

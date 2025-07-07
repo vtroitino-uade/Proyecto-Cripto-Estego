@@ -161,7 +161,7 @@ def _validar(mensaje: str, clave: str, metodo: str, modo: str, alfabeto_personal
         mensaje_resultado.insert("0.0", resultado)
         mensaje_resultado.configure(state="disabled")
     except ValueError as e:
-        logger.error(e)
+        logger.error("%s: %s", metodo, e)
         mb.showerror("Error", e)
 
 def cargar_archivo(entrada_mensaje: ctk.CTkTextbox) -> None:
