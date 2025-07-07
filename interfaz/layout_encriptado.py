@@ -29,6 +29,22 @@ def _actualizar_alfabeto(seleccion, entrada_alfabeto_personalizado):
     entrada_alfabeto_personalizado.configure(state=estado)
     logger.info("Usando alfabeto: %s", seleccion)
 
+def _generar_clave_aleatoria_cesar(longitud_alfabeto: int) -> str:
+    try:
+        return str(random.randint(1, longitud_alfabeto - 1))
+    except ValueError:
+        logger.error("Error al generar clave aleatoria para César.")
+        mb.showerror(
+            "Error", "No se pudo generar una clave aleatoria para César."
+                        " El alfabeto personalizado debe contener al menos 2 caracteres."
+        )
+    return ""
+
+def _generar_clave_aleatoria_feistel() -> str:
+    clave_maestra = _generar_clave_aleatoria()
+    rondas = random.randint(1, 10)
+    return f"{clave_maestra}:{rondas}"
+
 def _generar_matriz_hill(n: int) -> str:
     """
     Genera una matriz aleatoria n×n (n = 2 o 3) con valores entre 0 y 25
@@ -43,7 +59,11 @@ def _generar_matriz_hill(n: int) -> str:
     clave_str = " ".join(" ".join(str(num) for num in fila) for fila in matriz)
     return clave_str
 
-def _generar_clave_aleatoria(metodo: str, longitud: int = 12) -> str:
+def _generar_clave_aleatoria(metodo: str = "", longitud_alfabeto: int = "Español", longitud: int = 12) -> str:
+    if metodo == "César":
+        return _generar_clave_aleatoria_cesar(longitud_alfabeto)
+    if metodo == "Feistel":
+        return _generar_clave_aleatoria_feistel()
     if metodo == "Hill":
         return _generar_matriz_hill(random.choice([2, 3]))
     caracteres = string.ascii_letters + string.digits
@@ -181,15 +201,6 @@ def cargar_archivo(entrada_mensaje: ctk.CTkTextbox) -> None:
             print(f"Archivo cargado: {ruta_archivo}")
         logger.info("Contenido del archivo cargado en el campo de mensaje.")
 
-def _actualizar_estado_boton_clave(opciones_encriptado: ctk.CTkOptionMenu, btn_generar_clave: ctk.CTkButton):
-    """
-    Habilita o deshabilita el botón de generar clave según el método de cifrado seleccionado.
-    """
-    if opciones_encriptado.get() in ("César", "Feistel"):
-        btn_generar_clave.configure(state="disabled")
-    else:
-        btn_generar_clave.configure(state="normal")
-
 def _copiar_al_portapapeles(textbox: ctk.CTkTextbox, boton: ctk.CTkButton) -> None:
     contenido = textbox.get("0.0", "end-1c")
     textbox.clipboard_clear()
@@ -212,30 +223,12 @@ def mostrar_layout_encriptado(ventana: ctk.CTkFrame) -> None:
     opciones_encriptado = ctk.CTkOptionMenu(
         frame_principal,
         values=CIFRADOS,
-        command=lambda _: _actualizar_estado_boton_clave(opciones_encriptado, btn_generar_clave)
     )
     opciones_encriptado.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
 
     frame_clave = ctk.CTkFrame(frame_principal)
     frame_clave.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
     frame_clave.grid_columnconfigure(0, weight=1)
-
-    entrada_clave = ctk.CTkEntry(frame_clave, placeholder_text="Clave")
-    entrada_clave.grid(row=0, column=0, sticky="ew")
-
-    btn_generar_clave = ctk.CTkButton(
-        frame_clave,
-        text="Generar",
-        width=100,
-        state="disabled",
-        command=lambda: (
-            entrada_clave.delete(0, "end"),
-            entrada_clave.insert(0, _generar_clave_aleatoria(
-                opciones_encriptado.get()
-            ))
-        )
-    )
-    btn_generar_clave.grid(row=0, column=1, padx=(5, 0))
 
     opciones_alfabeto = ctk.CTkOptionMenu(
         frame_principal,
@@ -253,6 +246,24 @@ def mostrar_layout_encriptado(ventana: ctk.CTkFrame) -> None:
         state="disabled"
     )
     entrada_alfabeto_personalizado.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
+
+    entrada_clave = ctk.CTkEntry(frame_clave, placeholder_text="Clave")
+    entrada_clave.grid(row=0, column=0, sticky="ew")
+
+    btn_generar_clave = ctk.CTkButton(
+        frame_clave,
+        text="Generar",
+        width=100,
+        command=lambda: (
+            entrada_clave.delete(0, "end"),
+            entrada_clave.insert(0, _generar_clave_aleatoria(
+                opciones_encriptado.get(),
+                len(ALFABETOS[opciones_alfabeto.get()]) if opciones_alfabeto.get() != "Personalizado" else len(entrada_alfabeto_personalizado.get())
+            ))
+        )
+    )
+    btn_generar_clave.grid(row=0, column=1, padx=(5, 0))
+
 
     frame_accion = ctk.CTkFrame(frame_principal)
     frame_accion.grid(row=4, column=0, padx=20, pady=10, sticky="ew")
