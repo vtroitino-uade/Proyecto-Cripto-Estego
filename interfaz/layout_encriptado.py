@@ -197,7 +197,10 @@ def cargar_archivo(entrada_mensaje: ctk.CTkTextbox) -> None:
     )
     if ruta_archivo:
         with open(ruta_archivo, "r", encoding="utf-8", errors="replace") as archivo:
-            contenido = "".join(archivo.readlines())
+            lineas = []
+            for linea in archivo:
+                lineas.append(linea)
+            contenido = "".join(lineas)
             entrada_mensaje.delete("0.0", "end")
             entrada_mensaje.insert("0.0", contenido)
             logger.info("Archivo cargado: %s", ruta_archivo)
