@@ -14,14 +14,14 @@ Este proyecto es una herramienta educativa desarrollada en Python para experimen
 1. [Características](#características)
 2. [Fases](#fases)
 3. [Instalación](#instalación)
-4. [Encriptación](#encriptación)
+4. [Encriptación](#-encriptación)
     * [Cifrado César](#cifrado-césar)
     * [Cifrado Vigenère](#cifrado-vigenère)
     * [Cifrado XOR](#cifrado-xor)
     * [Cifrado Feistel](#cifrado-feistel)
     * [Cifrado Hill](#cifrado-hill)
-5. [Esteganografía](#esteganografía)
-6. [Generación de Claves](#generación-de-claves)
+5. [Esteganografía](#-esteganografía)
+6. [Generación de Claves](#-generación-de-claves)
 
 ## Características
 
