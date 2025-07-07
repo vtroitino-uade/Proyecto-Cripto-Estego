@@ -20,6 +20,8 @@ def _cargar_layout(nombre_tab: str, ventana: ctk.CTkFrame) -> None:
         mostrar_layout_encriptado(ventana)
     elif nombre_tab == "Esteganografía":
         logging.info("Seleccionando layout de Esteganografía")
+        ventana.grid_rowconfigure(0, weight=1)
+        ventana.grid_columnconfigure(0, weight=1)
         mostrar_layout_estego(ventana)
 
 def _cargar_interfaz() -> ctk.CTk:

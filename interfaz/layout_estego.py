@@ -77,8 +77,9 @@ def mostrar_layout_estego(ventana: ctk.CTkFrame):
     Muestra el layout de la sección de esteganografía en la ventana principal.
     """
     frame_principal = ctk.CTkFrame(ventana)
-    frame_principal.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
-    frame_principal.grid_columnconfigure(0, weight=1)
+    frame_principal.grid(row=0, column=0, padx=20, pady=20, sticky="n")
+    ventana.grid_columnconfigure(0, weight=1)
+    ventana.grid_rowconfigure(0, weight=1)
 
     ruta_var = ctk.StringVar(value="Ninguna imagen seleccionada")
 
@@ -94,10 +95,10 @@ def mostrar_layout_estego(ventana: ctk.CTkFrame):
         wraplength=400,
         justify="left"
     )
-    entrada_ruta.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
+    entrada_ruta.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
 
     entrada_mensaje = ctk.CTkEntry(frame_principal, placeholder_text="Mensaje a ocultar")
-    entrada_mensaje.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
+    entrada_mensaje.grid(row=2, column=0, padx=20, pady=10, sticky="nsew")
 
     modo_accion = ctk.StringVar(value="Ocultar")
     ctk.CTkRadioButton(

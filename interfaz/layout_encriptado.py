@@ -216,6 +216,12 @@ def mostrar_layout_encriptado(ventana: ctk.CTkFrame) -> None:
     Args:
         ventana (CTkFrame): Ventana donde se cargará el layout de encriptación.
     """
+    ventana.grid_rowconfigure(0, weight=1)
+    ventana.grid_columnconfigure(0, weight=1)
+    ventana.grid_columnconfigure(1, weight=2)
+    ventana.grid_columnconfigure(2, weight=1)
+
+
     frame_principal = ctk.CTkFrame(ventana)
     frame_principal.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
     frame_principal.grid_columnconfigure(0, weight=1)
