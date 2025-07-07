@@ -64,6 +64,12 @@ def _seleccionar_imagen(ruta_var: ctk.StringVar):
         logger.info("Imagen cargada: %s", ruta)
         ruta_var.set(f"Imagen cargada: {ruta}")
 
+def _copiar_al_portapapeles(textbox: ctk.CTkTextbox):
+    contenido = textbox.get("0.0", "end-1c")
+    textbox.clipboard_clear()
+    textbox.clipboard_append(contenido)
+    logger.info("Contenido copiado al portapapeles.")
+
 def mostrar_layout_estego(ventana: ctk.CTkFrame):
     """
     Muestra el layout de la sección de esteganografía en la ventana principal.

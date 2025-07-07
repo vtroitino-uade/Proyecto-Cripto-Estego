@@ -64,7 +64,7 @@ def feistel(mensaje: str, clave: str, rondas: int, descifrar: bool = False) -> s
             relleno_a_eliminar = int(relleno_a_eliminar)
             mensaje_bytes = base64.b64decode(mensaje)
         except ValueError as e:
-            raise ValueError("Formato de mensaje inválido para descifrar (esperaba 'base64:relleno')") from e
+            raise ValueError("Formato de mensaje inválido para descifrar") from e
     else:
         mensaje_bytes = mensaje.encode()
 

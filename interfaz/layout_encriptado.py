@@ -190,6 +190,14 @@ def _actualizar_estado_boton_clave(opciones_encriptado: ctk.CTkOptionMenu, btn_g
     else:
         btn_generar_clave.configure(state="normal")
 
+def _copiar_al_portapapeles(textbox: ctk.CTkTextbox, boton: ctk.CTkButton) -> None:
+    contenido = textbox.get("0.0", "end-1c")
+    textbox.clipboard_clear()
+    textbox.clipboard_append(contenido)
+    boton.configure(text="✅", font=("Arial", 15))
+    boton.after(2000, lambda: boton.configure(text="📋", font=("Arial", 20)))
+    logger.info("Resultado copiado al portapapeles.")
+
 def mostrar_layout_encriptado(ventana: ctk.CTkFrame) -> None:
     """
     Muestra el layout de la sección de encriptación en la ventana principal.
@@ -288,11 +296,24 @@ def mostrar_layout_encriptado(ventana: ctk.CTkFrame) -> None:
         border_width=2
     )
     entrada_mensaje.pack(expand=True, fill="both", padx=10, pady=10)
+    
     mensaje_resultado = ctk.CTkTextbox(
         frame_resultado,
         height=200,
     )
     mensaje_resultado.pack(expand=True, fill="both", padx=10, pady=10)
+    btn_copiar = ctk.CTkButton(
+        master=mensaje_resultado,
+        text="📋",
+        width=30,
+        font=("Arial", 20),
+        fg_color="transparent",
+        hover_color="#3a3b3c",
+        text_color="#cccccc",
+        anchor="center"
+    )
+    btn_copiar.place(relx=1.0, rely=1.0, anchor="se", x=-10, y=-10)
+    btn_copiar.configure(command=lambda: _copiar_al_portapapeles(mensaje_resultado, btn_copiar))
 
     boton_encriptar = ctk.CTkButton(
         frame_principal,
